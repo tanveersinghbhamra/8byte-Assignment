@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { DisplayStock } from "@/types/stock";
-import { formatCurrency } from "@/lib/format";
+import { formatCurrency, formatNumber } from "@/lib/format";
 
 export const columns: ColumnDef<DisplayStock, unknown>[] = [
     {
@@ -18,7 +18,7 @@ export const columns: ColumnDef<DisplayStock, unknown>[] = [
             return <span>{formatCurrency(value)}</span>;
         },
     },
-    
+
     {
         accessorKey: "qty",
         header: "Qty",
@@ -56,7 +56,7 @@ export const columns: ColumnDef<DisplayStock, unknown>[] = [
         },
     },
 
-     {
+    {
         accessorKey: "presentValue",
         header: "Present Value",
         cell: ({ row }) => {
@@ -65,13 +65,18 @@ export const columns: ColumnDef<DisplayStock, unknown>[] = [
         },
     },
 
-
     {
         accessorKey: "gainLoss",
         header: "Gain/Loss",
         cell: ({ row }) => {
             const value = row.original.gainLoss;
-            return <span className={value >= 0 ? "text-green-500" : "text-red-500"}>{formatCurrency(value)}</span>;
+            return (
+                <span
+                    className={value >= 0 ? "text-green-500" : "text-red-500"}
+                >
+                    {formatCurrency(value)}
+                </span>
+            );
         },
     },
 
@@ -80,7 +85,9 @@ export const columns: ColumnDef<DisplayStock, unknown>[] = [
         header: "P/E Ratio",
         cell: ({ row }) => {
             const value = row.original.peRatio;
-            return <span>{value === undefined ? "—" : value.toFixed(2)}</span>;
+            return (
+                <span>{value === undefined ? "—" : formatNumber(value)}</span>
+            );
         },
     },
 
@@ -89,7 +96,9 @@ export const columns: ColumnDef<DisplayStock, unknown>[] = [
         header: "Latest Earnings",
         cell: ({ row }) => {
             const value = row.original.latestEarnings;
-            return <span>{value === undefined ? "—" : value.toFixed(2)}</span>;
+            return (
+                <span>{value === undefined ? "—" : formatNumber(value)}</span>
+            );
         },
     },
 ];
