@@ -22,11 +22,11 @@ https://nse-portfolio-dashboard.vercel.app
 - Graceful error handling for failed or incomplete data fetches
 
 ## Setup
-- git clone - https://github.com/tanveersinghbhamra/8byte-Assignment
+- git clone https://github.com/tanveersinghbhamra/8byte-Assignment
 - cd 8byte-Assignment
 - npm install
 - npm run dev
-- Visit - http://localhost:3000
+- Visit http://localhost:3000
 
 ## Project Structure
 - app/
