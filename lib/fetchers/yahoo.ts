@@ -1,5 +1,5 @@
 import { LiveQuote } from "@/types/stock";
-import  YahooFinance  from "yahoo-finance2";
+import YahooFinance from "yahoo-finance2";
 
 const yahooFinance = new YahooFinance();
 
@@ -31,23 +31,34 @@ interface YahooQuoteResult {
 }
 
 async function fetchOneQuote(ticker: string): Promise<LiveQuote | null> {
-    try {
-        const result = (await yahooFinance.quote(
-            ticker + ".NS",
-        )) as YahooQuoteResult;
+    const maxAttempts = 3;
 
-        if (!result || result.regularMarketPrice === undefined) {
-            console.error(`Failed to fetch ${ticker}'s regularMarketPrice`);
-            return null;
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+            const result = (await yahooFinance.quote(
+                ticker + ".NS",
+            )) as YahooQuoteResult;
+
+            if (!result || result.regularMarketPrice === undefined) {
+                throw new Error("Missing regularMarketPrice");
+            }
+
+            return {
+                cmp: result.regularMarketPrice,
+                peRatio: result.trailingPE,
+                latestEarnings: result.epsTrailingTwelveMonths,
+            };
+        } catch (error) {
+            console.error(`Attempt ${attempt} failed for ${ticker}:`, error);
+
+            if (attempt < maxAttempts) {
+                await new Promise((resolve) =>
+                    setTimeout(resolve, 300 * attempt),
+                );
+            }
         }
-
-        return {
-            cmp: result.regularMarketPrice,
-            peRatio: result.trailingPE,
-            latestEarnings: result.epsTrailingTwelveMonths,
-        };
-    } catch (error) {
-        console.error(`Failed to fetch ${ticker}:`, error);
-        return null;
     }
+
+    console.error(`All ${maxAttempts} attempts failed for ${ticker}`);
+    return null;
 }
