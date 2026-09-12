@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NSE Portfolio Dashboard
 
-## Getting Started
+A realtime portfolio dashboard built for 8byte's technical assignment — tracks live NSE stock prices, P/E ratios, and portfolio performance grouped by sector.
 
-First, run the development server:
+## Live Demo
+[nse-portfolio-dashboard.vercel.app](https://nse-portfolio-dashboard.vercel.app)
 
-```bash
+## Tech Stack
+- Next.js (App Router)
+- TypeScript
+- Tailwind CSS
+- @tanstack/react-table
+- recharts
+- yahoo-finance2
+
+## Features
+- Live CMP, P/E ratio, and earnings data fetched every 15 seconds
+- Sector grouped holdings with per sector Investment/Present Value/Profit-Loss summaries
+- Portfolio summary cards and allocation/performance charts
+- Sector filtering
+- Server side caching to minimize redundant API calls
+- Graceful error handling for failed or incomplete data fetches
+
+## Setup
+
+\`\`\`
+git clone [https://github.com/tanveersinghbhamra/8byte-Assignment](https://github.com/tanveersinghbhamra/8byte-Assignment)
+cd nse-portfolio-dashboard
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+\`\`\`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+\`\`\`
+app/
+    api/portfolio/route.ts   — API endpoint serving live portfolio data
+    page.tsx                 — main dashboard page
+components/ 
+    columns.tsx — react-table column definitions and cell formatting
+    GainLossChart.tsx — per stock gain/loss bar chart
+    PortfolioSkeleton.tsx — loading placeholder shown on initial load
+    PortfolioSummary.tsx — top summary stat cards
+    PortfolioTable.tsx — table renderer with manual sector grouping
+    SectorChart.tsx — sector allocation donut chart
+lib/
+    cache/store.ts           — server side caching layer
+    data/portfolio-seed.ts   — static holdings data
+    fetchers/yahoo.ts        — Yahoo Finance integration
+    portfolio.ts             — merge + derived calculations
+    format.ts — currency/number formatting helpers (Intl.NumberFormat)
+types/
+    stock.ts             — TypeScript interfaces
+\`\`\`
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Notes
+See CHALLENGES.md for technical challenges faced and solutions.
