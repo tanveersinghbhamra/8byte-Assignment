@@ -1,9 +1,9 @@
 # NSE Portfolio Dashboard
 
-A realtime portfolio dashboard built for 8byte's technical assignment — tracks live NSE stock prices, P/E ratios, and portfolio performance grouped by sector.
+A realtime portfolio dashboard built for 8byte's technical assignment which tracks live NSE stock prices, P/E ratios, and portfolio performance grouped by sector.
 
 ## Live Demo
-[nse-portfolio-dashboard.vercel.app](https://nse-portfolio-dashboard.vercel.app)
+(https://nse-portfolio-dashboard.vercel.app)
 
 ## Tech Stack
 - Next.js (App Router)
@@ -22,21 +22,13 @@ A realtime portfolio dashboard built for 8byte's technical assignment — tracks
 - Graceful error handling for failed or incomplete data fetches
 
 ## Setup
-
-\`\`\`
-git clone [https://github.com/tanveersinghbhamra/8byte-Assignment](https://github.com/tanveersinghbhamra/8byte-Assignment)
-cd nse-portfolio-dashboard
+git clone (https://github.com/tanveersinghbhamra/8byte-Assignment)
+cd 8byte-Assignment
 npm install
 npm run dev
-
-\`\`\`
-
 Visit http://localhost:3000
 
 ## Project Structure
-
-\`\`\`
-
 app/
     api/portfolio/route.ts   — API endpoint serving live portfolio data
     page.tsx                 — main dashboard page
@@ -58,8 +50,6 @@ lib/
 
 types/
     stock.ts             — TypeScript interfaces
-
-\`\`\`
 
 ## Notes
 See CHALLENGES.md for technical challenges faced and solutions.
