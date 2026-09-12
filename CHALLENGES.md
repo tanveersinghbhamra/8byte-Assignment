@@ -26,6 +26,15 @@ Since I am fetching 29 stocks individually (no batch option in the library), and
 ## Getting the math order right for Portfolio %
 Small thing, but I initially tried calculating each stock's Portfolio % before I had the total investment across the whole portfolio calculated which obviously does not work since you need the grand total first to know what percentage any individual stock is. Had to restructure it into two passes: calculate the total first, then go back and calculate each stock's share of it.
 
+## Vercel deployment was missing more stocks than my local version
+After deploying, I noticed the live dashboard was showing way fewer stocks than my local version did, not just the usual couple that sometimes failed, but a lot more. At first I assumed something was broken in my code specifically for production, but after digging into it, I realized the actual cause was more interesting than a bug.
+
+Locally, my requests to Yahoo Finance all come from one consistent machine (my laptop's IP address). But when deployed on Vercel, my API route runs as a serverless function, which means it can execute on different, temporary instances each time, often sharing IP address ranges with a lot of other unrelated projects also hosted on Vercel. Yahoo's unofficial endpoint does not know or care that my project is small and legitimate, so it can end up rate limiting or momentarily rejecting requests that come from those busier, shared IPs more aggressively than it would from a single home connection.
+
+The fix was adding retry logic to each individual stock fetch. If a request fails, I wait briefly (300ms, then 600ms for a second retry) and try again, up to 3 times total, before finally giving up on that stock for that refresh cycle. Since most of these production failures were momentary rate limiting rather than a stock genuinely having no data, retrying gave the request a chance to succeed once the rate limit window passed. This fixed the majority of the missing-stocks issue in production.
+
+Two stocks specifically — LTIM and SAVFI still fail consistently, even with retries, both locally and in production. I double checked and both tickers are correct and currently valid on NSE, so this is not a typo or bad data on my end. It looks like Yahoo's unofficial endpoint just does not reliably serve data for these two specific stocks, regardless of how many times you ask. Retries can recover a momentary failure, but they can not fix a data source that genuinely does not have the data to give back, so this one stays as a known limitation rather than something fixable on my side.
+
 ## What I would improve with more time
 - Batch fetching — right now each stock is fetched individually; if a batch endpoint existed for this kind of data, it would cut down the number of network calls significantly and reduce the overall latency floor
 - A licensed market data API as a fallback — something like Alpha Vantage or Finnhub, so the dashboard does not fully depend on an unofficial, undocumented source for its core data
