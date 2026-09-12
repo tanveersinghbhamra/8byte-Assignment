@@ -21,7 +21,7 @@ export const columns: ColumnDef<DisplayStock, unknown>[] = [
 
     {
         accessorKey: "qty",
-        header: "Qty",
+        header: "Quantity",
     },
 
     {
@@ -44,7 +44,7 @@ export const columns: ColumnDef<DisplayStock, unknown>[] = [
 
     {
         accessorKey: "exchange",
-        header: "NSE/BSE",
+        header: "NSE Symbol",
     },
 
     {

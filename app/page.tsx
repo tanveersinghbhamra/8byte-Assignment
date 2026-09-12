@@ -6,18 +6,22 @@ import { PortfolioTable } from "@/components/PortfolioTable";
 import { PortfolioSummary } from "@/components/PortfolioSummary";
 import { SectorChart } from "@/components/SectorChart";
 import { PortfolioSkeleton } from "@/components/PortfolioSkeleton";
+import { GainLossChart } from "@/components/GainLossChart";
 
 export default function Home() {
     const [stocks, setStocks] = useState<DisplayStock[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isRefreshing, setIsRefreshing] = useState(false);
     const [selectedSector, setSelectedSector] = useState<string>("All");
 
     useEffect(() => {
         async function loadPortfolio() {
+            setIsRefreshing(true);
             const response = await fetch("/api/portfolio");
             const data = await response.json();
             setStocks(data);
             setIsLoading(false);
+            setIsRefreshing(false);
         }
 
         loadPortfolio();
@@ -33,9 +37,39 @@ export default function Home() {
 
     return (
         <div className="min-h-screen bg-slate-950 p-6">
-            <h1 className="mb-6 text-xl font-semibold text-slate-100">
-                Portfolio Dashboard
-            </h1>
+            <div className="mb-6 flex items-center justify-between">
+                <div>
+                    <h1 className="text-2xl font-bold text-slate-100">
+                        Portfolio Dashboard
+                    </h1>
+                    <p className="text-sm text-slate-500">
+                        Realtime NSE holdings tracker
+                    </p>
+                </div>
+                <div
+                    className={`flex items-center gap-2 rounded-full border px-3 py-1.5 transition-colors ${
+                        isRefreshing
+                            ? "border-blue-800 bg-blue-950"
+                            : "border-slate-800 bg-slate-900"
+                    }`}
+                >
+                    <span className="relative flex h-2 w-2">
+                        {!isRefreshing && (
+                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                        )}
+                        <span
+                            className={`relative inline-flex h-2 w-2 rounded-full ${
+                                isRefreshing ? "bg-blue-400" : "bg-green-500"
+                            }`}
+                        />
+                    </span>
+                    <span
+                        className={`text-xs ${isRefreshing ? "text-blue-300" : "text-slate-400"}`}
+                    >
+                        {isRefreshing ? "Refreshing" : "Live"}
+                    </span>
+                </div>
+            </div>
 
             {isLoading ? (
                 <PortfolioSkeleton />
@@ -46,6 +80,9 @@ export default function Home() {
                     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
                         <div className="lg:col-span-1">
                             <SectorChart data={stocks} />
+                        </div>
+                        <div className="lg:col-span-2">
+                            <GainLossChart data={stocks} />
                         </div>
                     </div>
 
